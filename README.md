@@ -1,0 +1,66 @@
+# MLOps Predictive Maintenance
+
+This project builds an end-to-end **machine failure prediction pipeline** using real-world sensor data, following **MLOps best practices** such as data versioning, reproducible pipelines, and experiment tracking.
+
+---
+
+## 📌 Objective
+
+The goal is to predict **machine failure events** using historical sensor readings and temporal patterns, while structuring the workflow in a way that reflects **real production ML systems**, not just a notebook-level ML experiment.
+
+---
+
+## 📊 Dataset
+
+- Source: Predictive maintenance sensor dataset  
+- Contains:
+  - Date of observation  
+  - Device identifier  
+  - Binary failure label  
+  - Multiple sensor metrics (`metric1` → `metric9`)  
+
+The dataset is tracked using **DVC** instead of Git to ensure:
+- reproducibility  
+- scalability  
+- proper data version control  
+
+---
+
+## 🔎 Exploratory Data Analysis (EDA)
+
+EDA focused on understanding **temporal behavior** and **sensor relationships** before model training.
+
+### Key findings
+
+#### 1. Temporal patterns
+- Failure rates vary across **months** and **weekdays**.
+- Failures peak during **high-activity operational periods** and drop toward **weekends**, suggesting workload influence rather than random degradation.
+
+#### 2. Sensor behavior
+- Certain sensor metrics show **distributional differences** between failure and non-failure events.
+- Strong **multicollinearity** detected between:
+  - `metric7` and `metric8`  
+  → metric8 will be removed during modeling.
+
+#### 3. Correlation structure
+- Most sensors are weakly correlated.
+- A few moderate relationships indicate **localized dependency**, not global redundancy.
+
+---
+
+## 🧠 ML vs MLOps Perspective
+
+This project is intentionally structured as an **MLOps system**, not just an ML notebook.
+
+Key differences:
+
+| ML Project | MLOps Project |
+|------------|--------------|
+| Single notebook training | Reproducible pipeline |
+| Data inside Git | Data versioned via DVC |
+| Manual runs | Automated stages |
+| No deployment thinking | Production-ready structure |
+
+---
+
+## 🗂 Project Structure
