@@ -48,19 +48,20 @@ EDA focused on understanding **temporal behavior** and **sensor relationships** 
 
 ---
 
-## 🧠 ML vs MLOps Perspective
-
-This project is intentionally structured as an **MLOps system**, not just an ML notebook.
-
-Key differences:
-
-| ML Project | MLOps Project |
-|------------|--------------|
-| Single notebook training | Reproducible pipeline |
-| Data inside Git | Data versioned via DVC |
-| Manual runs | Automated stages |
-| No deployment thinking | Production-ready structure |
 
 ---
 
 ## 🗂 Project Structure
+
+mlops-predictive-maintenance/
+│
+├── data/
+│   └── raw/                # Dataset tracked with DVC
+│
+├── notebooks/
+│   └── eda.ipynb           # Exploratory analysis
+│
+├── .dvc/                   # DVC metadata
+├── .dvcignore
+├── .gitignore
+└── README.md
