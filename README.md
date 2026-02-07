@@ -63,3 +63,45 @@ mlops-predictive-maintenance/
 ├── .dvcignore
 ├── .gitignore
 └── README.md
+```
+---
+
+## 🔁 Data Version Control (DVC)
+
+- Dataset removed from Git tracking  
+- Added to **DVC pipeline**  
+- Enables:
+  - reproducible experiments  
+  - remote storage  
+  - scalable collaboration  
+
+Next step: **connect cloud remote storage**.
+
+---
+
+## 🚀 Upcoming Pipeline Stages
+
+The following production stages will be implemented:
+
+1. Data ingestion  
+2. Data preprocessing  
+3. Feature engineering  
+4. Model training  
+5. Evaluation  
+6. Experiment tracking (MLflow)  
+7. Deployment-ready inference pipeline  
+
+---
+
+## 🏁 Status
+
+✅ EDA completed  
+✅ Dataset tracked with DVC  
+🔄 Cloud remote setup in progress  
+⏳ ML pipeline implementation pending  
+
+---
+
+## 📜 License
+
+For educational and portfolio use.
