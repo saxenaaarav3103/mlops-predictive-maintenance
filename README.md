@@ -51,16 +51,14 @@ EDA focused on understanding **temporal behavior** and **sensor relationships** 
 
 ---
 
-## 🗂 Project Structure
+### 📂 Project Structure
 
+```text
 mlops-predictive-maintenance/
-│
 ├── data/
 │   └── raw/                # Dataset tracked with DVC
-│
 ├── notebooks/
 │   └── eda.ipynb           # Exploratory analysis
-│
 ├── .dvc/                   # DVC metadata
 ├── .dvcignore
 ├── .gitignore
