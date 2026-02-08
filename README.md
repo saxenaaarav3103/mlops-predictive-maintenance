@@ -69,7 +69,7 @@ EDA focused on understanding **temporal behavior** and **sensor relationships** 
 
 ---
 
-🧠 Modeling Strategy (High-Level)
+## 🧠 Modeling Strategy (High-Level)
 
 Because machine failures are extremely rare, standard accuracy-focused modeling is misleading in this case.
 
