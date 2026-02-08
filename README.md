@@ -25,32 +25,6 @@ The dataset is tracked using **DVC** instead of Git to ensure:
 - proper data version control  
 
 ---
-
-## 🔎 Exploratory Data Analysis (EDA)
-
-EDA focused on understanding **temporal behavior** and **sensor relationships** before model training.
-
-### Key findings
-
-#### 1. Temporal patterns
-- Failure rates vary across **months** and **weekdays**.
-- Failures peak during **high-activity operational periods** and drop toward **weekends**, suggesting workload influence rather than random degradation.
-
-#### 2. Sensor behavior
-- Certain sensor metrics show **distributional differences** between failure and non-failure events.
-- Strong **multicollinearity** detected between:
-  - `metric7` and `metric8`  
-  → metric8 will be removed during modeling.
-
-#### 3. Correlation structure
-- Most sensors are weakly correlated.
-- A few moderate relationships indicate **localized dependency**, not global redundancy.
-
----
-
-
----
-
 ### 📂 Project Structure
 
 ```text
@@ -64,18 +38,67 @@ mlops-predictive-maintenance/
 ├── .gitignore
 └── README.md
 ```
+
+---
+
+## 🔎 Exploratory Data Analysis (EDA)
+
+EDA focused on understanding **temporal behavior** and **sensor relationships** before model training.
+
+### Key findings
+
+#### 1. Temporal patterns
+- Failure frequency varies across **months** and **weekdays**.
+- Peaks align with **high operational workload periods** and drop toward **weekends**, suggesting workload influence rather than random degradation.
+
+#### 2. Sensor behavior
+- Certain sensor metrics show **distributional differences** between failure events and normal operation.
+- Strong **multicollinearity** detected between:
+  - `metric7` and `metric8`  
+  → To avoid:
+    1. redundant information
+    2. unstable model coefficients
+    3. inflated variance
+    
+    metric8 will be removed during modeling.
+
+#### 3. Correlation structure
+- Most sensors are exhibit weak pairwise correlation.
+- A few moderate relationships indicate **localized dependency**, not global redundancy.
+
+
+---
+
+🧠 Modeling Strategy (High-Level)
+
+Because machine failure is extremely rare, standard accuracy-focused modeling is misleading.
+
+The modeling roadmap is therefore:
+	1.	Baseline Logistic Regression
+	•	Establish interpretable reference performance
+	•	Reveal class-imbalance challenges
+	2.	Imbalance-Aware Training
+	•	Improve recall for rare failures
+	•	Optimize meaningful metrics (ROC-AUC, PR-AUC, Recall)
+	3.	Gradient Boosting Models (LightGBM / XGBoost)
+	•	Capture nonlinear sensor interactions
+	•	Improve predictive discrimination
+	4.	Probability Calibration
+	•	Convert raw scores into true failure risk probabilities
+	•	Enable real-world decision thresholds
+
+
 ---
 
 ## 🔁 Data Version Control (DVC)
 
 - Dataset removed from Git tracking  
-- Added to **DVC pipeline**  
-- Enables:
-  - reproducible experiments  
-  - remote storage  
-  - scalable collaboration  
-
-Next step: **connect cloud remote storage**.
+- Dataset tracked using DVC
+- Local DVC remote storage configured
+- This helps with:
+    1. Experiment Reproducibility
+    2. clean Git History
+    3. Production-Style Data Management  
 
 ---
 
@@ -93,13 +116,15 @@ The following production stages will be implemented:
 
 ---
 
-## 🏁 Status
+## 🏁 Current Status
 
 ✅ EDA completed  
 ✅ Dataset tracked with DVC  
-🔄 Cloud remote setup in progress  
-⏳ ML pipeline implementation pending  
-
+✅ Local DVC Remote Configured
+✅ Baseline training pipeline implemented 
+🔄 Imbalance-aware modeling in progress
+⏳ Gradient boosting + calibration pending
+⏳ Full MLOps orchestration pending
 ---
 
 ## 📜 License
