@@ -1,0 +1,7 @@
+[core]
+    remote = storage
+[remote "storage"]
+    url = https://huggingface.co/datasets/saxenaaarav3103/mlops-predictive-maintenance-data
+    auth = basic
+    user = saxenaaarav3103
+    password = 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
