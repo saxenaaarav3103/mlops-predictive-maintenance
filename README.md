@@ -71,21 +71,23 @@ EDA focused on understanding **temporal behavior** and **sensor relationships** 
 
 ## 🧠 Modeling Strategy (High-Level)
 
-Because machine failures are extremely rare, standard accuracy-focused modeling is misleading in this case.
+Because machine failures are extremely rare, standard accuracy-focused modeling is misleading. Our roadmap focuses on handling class imbalance and non-linear interactions:
 
-The modeling roadmap is therefore:
-	1.	Baseline Logistic Regression
-			- Establish interpretable reference performance
-			- Reveal class-imbalance challenges
-	2.	Imbalance-Aware Training
-			- Improve recall for rare failures
-			- Optimize meaningful metrics (ROC-AUC, PR-AUC, Recall)
-	3.	Gradient Boosting Models (LightGBM / XGBoost)
-			- Capture nonlinear sensor interactions
-			- Improve predictive discrimination
-	4.	Probability Calibration
-			- Convert raw scores into true failure risk probabilities
-		 	- Enable real-world decision thresholds
+1. **Baseline Logistic Regression**
+   - Establish interpretable reference performance.
+   - Reveal class-imbalance challenges.
+
+2. **Imbalance-Aware Training**
+   - Improve recall for rare failures.
+   - Optimize meaningful metrics like ROC-AUC, PR-AUC, and Recall.
+
+3. **Gradient Boosting Models (LightGBM / XGBoost)**
+   - Capture nonlinear sensor interactions.
+   - Improve predictive discrimination.
+
+4. **Probability Calibration**
+   - Convert raw scores into true failure risk probabilities.
+   - Enable real-world decision thresholds.
 
 
 ---
