@@ -1,2 +1,4 @@
 .venv/
 .DS_Store
+dvc_storage/
+models/
