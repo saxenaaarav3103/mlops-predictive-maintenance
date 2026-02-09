@@ -14,7 +14,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pandas as pd
-from sklearn.metrics import classification_report, roc_auc_score
+from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -58,7 +58,7 @@ def main() -> None:
     model = Pipeline(
         steps=[
             ("scaler", StandardScaler()),
-            ("clf", LogisticRegression(max_iter=1000)),
+            ("clf", LogisticRegression(max_iter=1000, class_weight="balanced")),
         ]
     )
 
@@ -66,14 +66,20 @@ def main() -> None:
     model.fit(X_train, y_train)
 
     # Evaluation
-    y_pred = model.predict(X_test)
     y_proba = model.predict_proba(X_test)[:, 1]
+
+    threshold = 0.20
+    y_pred = (y_proba >= threshold).astype(int)
 
     print("\n=== Classification Report ===")
     print(classification_report(y_test, y_pred))
 
     print("ROC-AUC:", roc_auc_score(y_test, y_proba))
 
+    cm = confusion_matrix(y_test, y_pred)
+    print("\nConfusion Matrix [[TN, FP], [FN, TP]]:")
+    print(cm)
+    
     # Ensure presence of models folder exists 
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
 
