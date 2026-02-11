@@ -1,4 +1,3 @@
-# src/train.py
 """
 Training a baseline predictive maintenance model.
 
@@ -13,8 +12,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
-from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix
+from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix, precision_score, recall_score 
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -22,7 +22,7 @@ from sklearn.linear_model import LogisticRegression
 import joblib
 
 
-# ---- Paths (keep them relative to repo root) ----
+# Paths (relative to repo root) 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = REPO_ROOT / "data" / "raw" / "predictive_maintenance_dataset.csv"
 MODEL_DIR = REPO_ROOT / "models"
@@ -34,7 +34,7 @@ DEVICE_COL = "device"
 
 
 def main() -> None:
-    # Load the dataset
+    # Loading the dataset
     df = pd.read_csv(DATA_PATH)
 
     # Basic time feature engineering
@@ -44,7 +44,7 @@ def main() -> None:
         df["month"] = df[DATE_COL].dt.month
         df["day"] = df[DATE_COL].dt.day
 
-    # Drop non-numeric / identifier columns
+    # Dropping non-numeric / identifier columns
     drop_cols = [DATE_COL, DEVICE_COL]
     X = df.drop(columns=[c for c in drop_cols + [TARGET_COL] if c in df.columns])
     y = df[TARGET_COL]
@@ -68,8 +68,26 @@ def main() -> None:
     # Evaluation
     y_proba = model.predict_proba(X_test)[:, 1]
 
-    threshold = 0.20
-    y_pred = (y_proba >= threshold).astype(int)
+    thresholds = np.linspace(0.01, 0.99, 50)
+
+    best_threshold = 0.5
+    best_recall = 0.0
+    min_precision = 0.10  # acceptable false-alarm tolerance
+
+    for t in thresholds:
+        y_pred_temp = (y_proba >= t).astype(int)
+
+        precision = precision_score(y_test, y_pred_temp, zero_division=0)
+        recall = recall_score(y_test, y_pred_temp, zero_division=0)
+
+        if precision >= min_precision and recall > best_recall:
+            best_recall = recall
+            best_threshold = t
+
+    print(f"\nBest threshold based on Recall constraint: {best_threshold:.2f}")
+
+   
+    y_pred = (y_proba >= best_threshold).astype(int)
 
     print("\n=== Classification Report ===")
     print(classification_report(y_test, y_pred))
@@ -80,7 +98,7 @@ def main() -> None:
     print("\nConfusion Matrix [[TN, FP], [FN, TP]]:")
     print(cm)
     
-    # Ensure presence of models folder exists 
+    # Ensuring 'models' folder exists 
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
 
     # Saving model
