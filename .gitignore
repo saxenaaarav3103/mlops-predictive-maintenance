@@ -2,3 +2,5 @@
 .DS_Store
 dvc_storage/
 models/
+__pycache__/
+*.py[cod]
