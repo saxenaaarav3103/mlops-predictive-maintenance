@@ -104,29 +104,85 @@ Because machine failures are extremely rare, standard accuracy-focused modeling 
 
 ---
 
-## 🚀 Upcoming Pipeline Stages
+## Modeling Evolution
 
-The following production stages will be implemented:
+1) Initial Baselines and Their Limits
 
-1. Data ingestion  
-2. Data preprocessing  
-3. Feature engineering  
-4. Model training  
-5. Evaluation  
-6. Experiment tracking (MLflow)  
-7. Deployment-ready inference pipeline  
+   The project started with three scripts:
+
+  * src/train_logreg.py (Logistic Regression)
+  * src/train_xgb.py (XGBoost)
+  * src/train_hybrid.py (Isolation Forest + XGBoost)
+
+These models used the original 1 day target and random stratified train-test evaluation. Despite imbalance handling, results were not operationally useful due to the following reasons:
+
+  * very unstable precision-recall tradeoff
+  * high false-alert behavior for recall-focused thresholds
+  * weak future-facing reliability when evaluated more strictly
+
+In short, exact same day failure prediction with the raw setup was too hard for this dataset.
+
+
+2) Problem Reframing Window-Based Failure Target
+
+    To address these issues, the pipeline was redesigned in src/train_window_target.py:
+
+    * target changed from “failure today” to “failure within next 14 days”
+      
+  This pivot in direction increased positive examples due to increased prediction window and made the task closer to real maintenance planning (aiming for early warning instead of exact day guessing).
+
+
+3) Temporal Signal Engineering
+   
+   Device-level temporal features were added to capture degradation dynamics:
+
+    * lag features (lag1, lag3)
+    * delta/change features
+    * rolling means/std over multiple windows (3, 7, 14)
+    * relative change and calendar context (day, month, dayofweek)
+
+This moved the model away from one time snapshots and made it learn how each machine’s behavior changes over time.
+     
+4) Evaluation Hardening (More Realistic, Less Inflated)
+   
+   The old random split approach was replaced with a chronological split:
+
+    * train = older period
+    * validation = middle period
+    * test = latest period
+
+Threshold selection is now performed on validation and then fixed for final test evaluation.
+This removed optimistic bias from tuning directly on test predictions and gave a more honest view of generalization.
+
+5) Current Outcome
+
+   Compared with earlier scripts, train_window_target.py provides a more credible and practical framework:
+
+    * better aligned target definition
+    * stronger temporal feature representation
+    * production-like time-aware validation logic
+    
+   Even where metrics remain challenging, results are now reliable enough for meaningful iteration, unlike earlier pipelines that did not produce suitable results
+
 
 ---
 
-## 🏁 Current Status
+
+## Current Status
 
 ✅ EDA completed  
 ✅ Dataset tracked with DVC  
-✅ Local DVC Remote Configured
-✅ Baseline training pipeline implemented 
-🔄 Imbalance-aware modeling in progress
-⏳ Gradient boosting + calibration pending
-⏳ Full MLOps orchestration pending
+✅ Local DVC remote configured  
+✅ Baseline models implemented (`train_logreg.py`, `train_xgb.py`, `train_hybrid.py`)  
+✅ Window-based target modeling implemented (`train_window_target.py`, currently 14-day window)  
+✅ Time-aware train/validation/test split implemented  
+✅ Validation-based threshold tuning implemented (test set kept for final evaluation)  
+✅ Temporal feature engineering added (lags, deltas, rolling stats)  
+🔄 Precision–recall improvement experiments ongoing (SMOTE vs class-weight setups)  
+⏳ PR-AUC and recall@top-k operational metrics pending in training logs  
+⏳ MLflow experiment tracking integration pending  
+
+
 ---
 
 ## 📜 License
